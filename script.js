@@ -14,5 +14,27 @@ function createNewFish() {
     fishAreaEl.appendChild(newFish)
 }
 
+function moveAllFish() {
+    fishArr.forEach(fish => {
+
+        const computedStyle = window.getComputedStyle(fish)
+        const width = parseFloat(computedStyle.width)
+
+        const left = Math.floor(Math.random() * (window.innerWidth - width))
+        fish.style.left = `${left}px`
+    })
+}
 
 createNewFish()
+createNewFish()
+moveAllFish()
+
+const moveInterval = setInterval(moveAllFish, 600)
+
+
+
+
+
+
+
+
