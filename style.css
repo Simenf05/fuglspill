@@ -1,0 +1,20 @@
+body {
+    overflow: hidden;
+    margin: 0px;
+    background-color: rebeccapurple;
+}
+
+
+#fishArea {
+    position: absolute;
+    top: 50%;
+    height: 50%;
+    width: 100%;
+    background-color: black;
+}
+
+.slim {
+    width: 6rem;
+    height: auto;
+}
+
