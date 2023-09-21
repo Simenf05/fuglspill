@@ -13,6 +13,10 @@ body {
     background-color: black;
 }
 
+.z-index {
+    z-index: 1;
+}
+
 .absolute {
     position: absolute;
 }
