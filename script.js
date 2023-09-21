@@ -56,10 +56,40 @@ document.onkeyup = (e) => {keys[e.key] = false}
 const birdMoveInterval = setInterval(() => {
     
     if (keys["ArrowUp"] && birdPos[1] - birdSpeed > 0) birdPos[1] -= birdSpeed
-    if (keys["ArrowDown"] && birdPos[1] + birdSpeed + birdWidth < window.innerWidth) birdPos[1] += birdSpeed
+    if (keys["ArrowDown"] && birdPos[1] + birdSpeed + birdWidth < window.innerHeight) birdPos[1] += birdSpeed
     if (keys["ArrowLeft"] && birdPos[0] - birdSpeed > 0) birdPos[0] -= birdSpeed
-    if (keys["ArrowRight"] && birdPos[0] + birdSpeed + birdHeight < window.innerHeight) birdPos[0] += birdSpeed
+    if (keys["ArrowRight"] && birdPos[0] + birdSpeed + birdHeight < window.innerWidth) birdPos[0] += birdSpeed
+
+    checkOverlap()
 
     setPos(birdEl, birdPos)
 
 }, 10);
+
+
+function checkOverlap() {
+
+    const birdRect = birdEl.getBoundingClientRect()
+
+    fishArr.forEach(fish => {
+        
+        const fishRect = fish.getBoundingClientRect()
+
+        const overlap = !(
+            birdRect.right < fishRect.left ||
+            birdRect.left > fishRect.right ||
+            birdRect.bottom < fishRect.top ||
+            birdRect.top > fishRect.bottom
+        )
+
+        if (overlap) {
+
+            fish.remove()
+            fishArr.splice(fishArr.indexOf(fish), 1)
+
+        }
+
+        
+    });
+    
+}
