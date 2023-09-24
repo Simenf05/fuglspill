@@ -6,6 +6,13 @@ function setPos(obj, pos) {
 const getWidth = (element) => parseFloat(window.getComputedStyle(element).width)
 const getHeight = (element) => parseFloat(window.getComputedStyle(element).height)
 
+const getOverlap = (rect1, rect2) => !(
+    rect1.right < rect2.left ||
+    rect1.left > rect2.right ||
+    rect1.bottom < rect2.top ||
+    rect1.top > rect2.bottom
+)
+
 const fishAreaEl = document.querySelector("#fishArea")
 
 
@@ -64,12 +71,7 @@ function checkOverlapFish() {
         
         const fishRect = fish.getBoundingClientRect()
 
-        const overlap = !(
-            birdRect.right < fishRect.left ||
-            birdRect.left > fishRect.right ||
-            birdRect.bottom < fishRect.top ||
-            birdRect.top > fishRect.bottom
-        )
+        const overlap = getOverlap(birdRect, fishRect)
 
         if (overlap) {
 
@@ -77,10 +79,7 @@ function checkOverlapFish() {
             fishArr.splice(fishArr.indexOf(fish), 1)
 
         }
-
-        
-    });
-
+    })
 }
 
 
@@ -99,22 +98,51 @@ function openBorder() {
     setTimeout(() => {
         border1El.style.width = `${widthBorder1 + 10}%`
         border2El.style.width = `${widthBorder2 + 10}%`
-    }, 1000);
+    }, 5000)
 }
 
 
-const openBorderInterval = setInterval(openBorder, 3000)
+const openBorderInterval = setInterval(openBorder, 10000)
+
+
+function handleBirdMovment(vec) {
+
+    const getBoundingClientRect = element => {
+        const {top, right, bottom, left, width, height, x, y} = element.getBoundingClientRect()
+        return {top, right, bottom, left, width, height, x, y} 
+    }
+
+    const stepPos = [birdPos[0] + vec[0], birdPos[1] + vec[1]]
+    const stepRect = getBoundingClientRect(birdEl)
+    stepRect.left += vec[0]
+    stepRect.right += vec[0]
+    stepRect.top += vec[1]
+    stepRect.bottom += vec[1]
+
+
+    if (stepPos[0] < 0) return
+    if (stepPos[1] < 0) return
+    if (stepPos[0] + birdWidth > window.innerWidth) return
+    if (stepPos[1] + birdHeight > window.innerHeight) return
+
+    if (getOverlap(stepRect, border1El.getBoundingClientRect())) return
+    if (getOverlap(stepRect, border2El.getBoundingClientRect())) return
+
+    birdPos[0] = stepPos[0]
+    birdPos[1] = stepPos[1]
+}
 
 
 const birdMoveInterval = setInterval(() => {
-    
-    if (keys["ArrowUp"] && birdPos[1] - birdSpeed > 0) birdPos[1] -= birdSpeed
-    if (keys["ArrowDown"] && birdPos[1] + birdSpeed + birdWidth < window.innerHeight) birdPos[1] += birdSpeed
-    if (keys["ArrowLeft"] && birdPos[0] - birdSpeed > 0) birdPos[0] -= birdSpeed
-    if (keys["ArrowRight"] && birdPos[0] + birdSpeed + birdHeight < window.innerWidth) birdPos[0] += birdSpeed
 
-    checkOverlapFish()
+    if (keys["ArrowUp"]) handleBirdMovment([0, -birdSpeed])
+    if (keys["ArrowDown"]) handleBirdMovment([0, birdSpeed])
+    if (keys["ArrowLeft"]) handleBirdMovment([-birdSpeed, 0])
+    if (keys["ArrowRight"]) handleBirdMovment([birdSpeed, 0])
 
     setPos(birdEl, birdPos)
 
-}, 10);
+    checkOverlapFish()
+
+}, 10)
+
