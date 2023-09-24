@@ -5,12 +5,31 @@ body {
 }
 
 
-#fishArea {
-    position: absolute;
+#fishArea, #borderBox {
     top: 50%;
     height: 50%;
     width: 100%;
     background-color: black;
+}
+
+#borderBox {
+    height: 5%;
+}
+
+.border {
+    position: relative;
+    height: 100%;
+    width: 50%;
+    background-color: red;
+    transition: all .2s ease;
+}
+
+#border1 {
+    float: left;
+}
+
+#border2 {
+    float: right;
 }
 
 .z-index {

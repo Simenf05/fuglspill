@@ -16,6 +16,7 @@ function createNewFish() {
     const newFish = document.createElement("img")
     newFish.className = "slim fish absolute"
     newFish.src = "images/fish.png"
+    newFish.style.top = `${Math.floor(Math.random() * 70) + 12}%`
     fishArr.push(newFish)
     fishAreaEl.appendChild(newFish)
 }
@@ -46,6 +47,7 @@ const birdSpeed = 5
 const birdWidth = getWidth(birdEl)
 const birdHeight = getHeight(birdEl)
 
+
 setPos(birdEl, birdPos)
 
 const keys = {}
@@ -53,21 +55,8 @@ const keys = {}
 document.onkeydown = (e) => {keys[e.key] = true}
 document.onkeyup = (e) => {keys[e.key] = false}
 
-const birdMoveInterval = setInterval(() => {
-    
-    if (keys["ArrowUp"] && birdPos[1] - birdSpeed > 0) birdPos[1] -= birdSpeed
-    if (keys["ArrowDown"] && birdPos[1] + birdSpeed + birdWidth < window.innerHeight) birdPos[1] += birdSpeed
-    if (keys["ArrowLeft"] && birdPos[0] - birdSpeed > 0) birdPos[0] -= birdSpeed
-    if (keys["ArrowRight"] && birdPos[0] + birdSpeed + birdHeight < window.innerWidth) birdPos[0] += birdSpeed
 
-    checkOverlap()
-
-    setPos(birdEl, birdPos)
-
-}, 10);
-
-
-function checkOverlap() {
+function checkOverlapFish() {
 
     const birdRect = birdEl.getBoundingClientRect()
 
@@ -91,5 +80,41 @@ function checkOverlap() {
 
         
     });
-    
+
 }
+
+
+const borderEl = document.querySelector("#border")
+const border1El = document.querySelector("#border1")
+const border2El = document.querySelector("#border2")
+
+function openBorder() {
+
+    const widthBorder1 = Math.floor(Math.random() * 75) + 5
+    const widthBorder2 = 100 - 20 - widthBorder1
+
+    border1El.style.width = `${widthBorder1}%`
+    border2El.style.width = `${widthBorder2}%`
+
+    setTimeout(() => {
+        border1El.style.width = `${widthBorder1 + 10}%`
+        border2El.style.width = `${widthBorder2 + 10}%`
+    }, 1000);
+}
+
+
+const openBorderInterval = setInterval(openBorder, 3000)
+
+
+const birdMoveInterval = setInterval(() => {
+    
+    if (keys["ArrowUp"] && birdPos[1] - birdSpeed > 0) birdPos[1] -= birdSpeed
+    if (keys["ArrowDown"] && birdPos[1] + birdSpeed + birdWidth < window.innerHeight) birdPos[1] += birdSpeed
+    if (keys["ArrowLeft"] && birdPos[0] - birdSpeed > 0) birdPos[0] -= birdSpeed
+    if (keys["ArrowRight"] && birdPos[0] + birdSpeed + birdHeight < window.innerWidth) birdPos[0] += birdSpeed
+
+    checkOverlapFish()
+
+    setPos(birdEl, birdPos)
+
+}, 10);
