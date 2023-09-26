@@ -44,9 +44,11 @@ moveAllFish()
 const fishMoveInterval = setInterval(moveAllFish, 600)
 
 
+let points = 0
+const pointsEl = document.querySelector("#points")
+const updatePoints = () =>  pointsEl.innerHTML = `Du har ${points} poeng.`
 
-
-
+updatePoints()
 
 const birdEl = document.querySelector("#bird")
 const birdPos = [0, 0]
@@ -78,12 +80,19 @@ function checkOverlapFish() {
             fish.remove()
             fishArr.splice(fishArr.indexOf(fish), 1)
 
+            points += 1
+            updatePoints()
+
+            createNewFish()
+
         }
     })
 }
 
 
-const borderEl = document.querySelector("#border")
+const borderEl = document.querySelector("#borderBox")
+const borderRect = borderEl.getBoundingClientRect()
+
 const border1El = document.querySelector("#border1")
 const border2El = document.querySelector("#border2")
 
@@ -96,13 +105,24 @@ function openBorder() {
     border2El.style.width = `${widthBorder2}%`
 
     setTimeout(() => {
+
         border1El.style.width = `${widthBorder1 + 10}%`
         border2El.style.width = `${widthBorder2 + 10}%`
-    }, 5000)
+
+        const borderRect = borderEl.getBoundingClientRect()
+        const birdRect = birdEl.getBoundingClientRect()
+
+        const overlap = getOverlap(borderRect, birdRect)
+
+        if (overlap) {
+            birdPos[1] = borderRect.top - birdRect.height - 1
+        }
+
+    }, 2000)
 }
 
 
-const openBorderInterval = setInterval(openBorder, 10000)
+const openBorderInterval = setInterval(openBorder, 3000)
 
 
 function handleBirdMovment(vec) {
@@ -130,8 +150,25 @@ function handleBirdMovment(vec) {
 
     birdPos[0] = stepPos[0]
     birdPos[1] = stepPos[1]
+
 }
 
+
+let underWater = false
+const birdAirTime = 100
+let birdAir = 100
+
+const birdAirMeterEl = document.querySelector("#birdAirMeter")
+function birdAirChanger() {
+    
+    
+
+    birdAir -= 1
+    birdAirMeterEl.style.width = `${birdAir}%`
+
+}
+
+let airInterval
 
 const birdMoveInterval = setInterval(() => {
 
@@ -141,6 +178,22 @@ const birdMoveInterval = setInterval(() => {
     if (keys["ArrowRight"]) handleBirdMovment([birdSpeed, 0])
 
     setPos(birdEl, birdPos)
+
+
+    if (birdPos[1] < borderRect.top) {
+        
+        underWater = false
+        birdAir = 100
+        birdAirMeterEl.style.width = `${birdAir}%`
+        if (airInterval) {
+            clearInterval(airInterval)
+            airInterval = null
+        }        
+    }
+    else if (birdPos[1] > borderRect.top && !underWater) {
+        underWater = true
+        airInterval = setInterval(birdAirChanger, birdAirTime)
+    }
 
     checkOverlapFish()
 
