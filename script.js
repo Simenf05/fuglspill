@@ -41,7 +41,7 @@ createNewFish()
 createNewFish()
 moveAllFish()
 
-const fishMoveInterval = setInterval(moveAllFish, 600)
+let fishMoveInterval = setInterval(moveAllFish, 600)
 
 
 let points = 0
@@ -61,8 +61,17 @@ setPos(birdEl, birdPos)
 
 const keys = {}
 
-document.onkeydown = (e) => {keys[e.key] = true}
-document.onkeyup = (e) => {keys[e.key] = false}
+const turnOnKeyEvent = () => {
+    document.onkeydown = (e) => {keys[e.key] = true}
+    document.onkeyup = (e) => {keys[e.key] = false}
+}
+
+const turnOffKeyEvent = () => {
+    document.onkeydown = null
+    document.onkeyup = null
+}
+
+turnOnKeyEvent()
 
 
 function checkOverlapFish() {
@@ -153,22 +162,52 @@ function handleBirdMovment(vec) {
 
 }
 
+const gameOverEl = document.querySelector("#gameOver")
+
+function gameLost() {
+
+    turnOffKeyEvent()
+    gameOverEl.style.display = "flex"
+    clearInterval(fishMoveInterval)
+    fishMoveInterval = null
+
+}
+
+function tryAgain(e) {
+    gameOverEl.style.display = "none"
+    birdPos[0] = 0
+    birdPos[1] = 0
+
+    setPos(birdEl, birdPos)
+
+    points = 0
+    updatePoints()
+
+    turnOnKeyEvent()
+
+    fishMoveInterval = setInterval(moveAllFish, 600)
+
+}
 
 let underWater = false
 const birdAirTime = 100
 let birdAir = 100
+let airInterval
+
 
 const birdAirMeterEl = document.querySelector("#birdAirMeter")
+
 function birdAirChanger() {
     
-    
-
     birdAir -= 1
+    if (birdAir == 0) {
+        clearInterval(airInterval)
+        gameLost()
+    }
     birdAirMeterEl.style.width = `${birdAir}%`
 
 }
 
-let airInterval
 
 const birdMoveInterval = setInterval(() => {
 
