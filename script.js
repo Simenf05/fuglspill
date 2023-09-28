@@ -71,6 +71,7 @@ const turnOffKeyEvent = () => {
     document.onkeyup = null
 }
 
+
 turnOnKeyEvent()
 
 
@@ -104,6 +105,7 @@ const borderRect = borderEl.getBoundingClientRect()
 
 const border1El = document.querySelector("#border1")
 const border2El = document.querySelector("#border2")
+
 
 function openBorder() {
 
@@ -162,7 +164,9 @@ function handleBirdMovment(vec) {
 
 }
 
+
 const gameOverEl = document.querySelector("#gameOver")
+
 
 function gameLost() {
 
@@ -188,6 +192,7 @@ function tryAgain(e) {
     fishMoveInterval = setInterval(moveAllFish, 600)
 
 }
+
 
 let underWater = false
 const birdAirTime = 100
